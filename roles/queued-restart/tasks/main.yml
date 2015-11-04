@@ -1,0 +1,12 @@
+---
+  - name: Wait for currently running tasks to stop
+    register: waitforsemaphore
+    action: shell drush @hostmaster sql-query "SELECT count(*) FROM semaphore WHERE name='hosting_queue_tasks_running'" |grep count -v
+    sudo: yes
+    sudo_user: aegir
+    until: waitforsemaphore.stdout == "0"
+    # Retry every 5 seconds for 10 minutes... some tasks can take a while
+    retries: 120
+    delay: 5
+
+  - service: name=hosting-queued state=restarted

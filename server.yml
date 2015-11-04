@@ -1,0 +1,4 @@
+---
+- hosts: queued-restart
+  roles:
+    - { role: queued-restart, tags: queued-restart }
